@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Budget App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Monthly Budget</h1>
+        <div class="nav">
+            {% block nav %}
+            <a href="/" class="btn">Home</a>
+            <a href="/history" class="btn">History</a>
+            <a href="/add_category" class="btn btn-secondary">+ Category</a>
+            {% endblock %}
+        </div>
+        <hr>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2 style="text-align:center;">{{ month_label }}</h2>
+
+<details open class="budget-section">
+    <summary>Under Budget ({{ under_budget|length }})</summary>
+    {% if under_budget %}
+        {% for item in under_budget %}
+        <div class="card">
+            <h3>{{ item.name }}</h3>
+
+            <div class="amounts">
+                <span>Budget: ${{ item.budget | currency }}</span>
+                <span>Spent: ${{ item.spent | currency }}</span>
+            </div>
+
+            <div class="amounts">
+                <span class="remaining positive">
+                    Remaining: ${{ item.remaining | currency }}
+                </span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill positive"
+                     style="width: {{ (item.spent / item.budget * 100) if item.budget > 0 else 0 }}%">
+                </div>
+            </div>
+
+            <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+                <a href="/add_expense?category_id={{ item.id }}" class="btn btn-small">
+                    + Add Expense
+                </a>
+                <form method="POST" action="/delete_category" style="margin:0;">
+                    <input type="hidden" name="category_id" value="{{ item.id }}">
+                    <button type="submit" class="btn btn-small btn-danger">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-state">No categories under budget.</p>
+    {% endif %}
+</details>
+
+<details class="budget-section">
+    <summary>Hit Budget ({{ hit_budget|length }})</summary>
+    {% if hit_budget %}
+        {% for item in hit_budget %}
+        <div class="card">
+            <h3>{{ item.name }}</h3>
+
+            <div class="amounts">
+                <span>Budget: ${{ item.budget | currency }}</span>
+                <span>Spent: ${{ item.spent | currency }}</span>
+            </div>
+
+            <div class="amounts">
+                <span class="remaining positive">
+                    Remaining: ${{ item.remaining | currency }}
+                </span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill positive" style="width: 100%;">
+                </div>
+            </div>
+
+            <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+                <a href="/add_expense?category_id={{ item.id }}" class="btn btn-small">
+                    + Add Expense
+                </a>
+                <form method="POST" action="/delete_category" style="margin:0;">
+                    <input type="hidden" name="category_id" value="{{ item.id }}">
+                    <button type="submit" class="btn btn-small btn-danger">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-state">No categories exactly at budget.</p>
+    {% endif %}
+</details>
+
+<details class="budget-section">
+    <summary>Over Budget ({{ over_budget|length }})</summary>
+    {% if over_budget %}
+        {% for item in over_budget %}
+        <div class="card">
+            <h3>{{ item.name }}</h3>
+
+            <div class="amounts">
+                <span>Budget: ${{ item.budget | currency }}</span>
+                <span>Spent: ${{ item.spent | currency }}</span>
+            </div>
+
+            <div class="amounts">
+                <span class="remaining negative">
+                    Remaining: ${{ item.remaining | currency }}
+                </span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill negative"
+                     style="width: {{ (item.spent / item.budget * 100) if item.budget > 0 else 100 }}%">
+                </div>
+            </div>
+
+            <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+                <a href="/add_expense?category_id={{ item.id }}" class="btn btn-small">
+                    + Add Expense
+                </a>
+                <form method="POST" action="/delete_category" style="margin:0;">
+                    <input type="hidden" name="category_id" value="{{ item.id }}">
+                    <button type="submit" class="btn btn-small btn-danger">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-state">No categories over budget.</p>
+    {% endif %}
+</details>
+
+<div class="summary-card">
+    <h3>Totals</h3>
+
+    <div class="amounts">
+        <span>Total Budget: ${{ total_budget | currency }}</span>
+        <span>Total Spent: ${{ total_spent | currency }}</span>
+    </div>
+
+    <div class="amounts">
+        <span class="remaining {% if total_remaining < 0 %}negative{% else %}positive{% endif %}">
+            {% if total_remaining < 0 %}
+                Over by ${{ (total_remaining * -1) | currency }}
+            {% else %}
+                Remaining: ${{ total_remaining | currency }}
+            {% endif %}
+        </span>
+        <span>{{ total_progress_pct | round(0, 'common') | int }}%</span>
+    </div>
+
+    <div class="progress-bar summary-progress">
+        <div class="progress-fill {% if total_remaining < 0 %}negative{% else %}positive{% endif %}"
+             style="width: {{ total_progress_pct if total_progress_pct <= 100 else 100 }}%;">
+        </div>
+    </div>
+</div>
+
+{% endblock %}

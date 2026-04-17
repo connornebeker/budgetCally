@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+
+{% block nav %}
+    <a href="/" class="btn">Back to Home</a>
+    <form action="/history" method="get" class="history-search-form">
+        <input type="search" name="search" placeholder="Search month…" value="{{ request.args.get('search', '') }}">
+        <button type="submit" class="btn btn-small">Search</button>
+    </form>
+{% endblock %}
+
+{% block content %}
+<h2 style="text-align:center;">History</h2>
+
+{% if history %}
+    {% for month in history %}
+    <details class="history-month" {% if loop.first %}open{% endif %}>
+        <summary>
+            <div class="history-summary-title">
+                <span>{{ month.label }}</span>
+                <span class="history-summary-values">
+                    {{ month.total_spent | currency }} / {{ month.total_budget | currency }}
+                    ({{ month.total_progress_pct | round(0, 'common') | int }}%)
+                </span>
+            </div>
+            <div class="history-summary-bar">
+                <div class="progress-bar" aria-hidden="true">
+                    <div class="progress-fill {% if month.total_remaining < 0 %}negative{% else %}positive{% endif %}"
+                         style="width: {{ month.total_progress_pct if month.total_progress_pct <= 100 else 100 }}%;">
+                    </div>
+                </div>
+            </div>
+        </summary>
+
+        <div class="history-month-content">
+            {% for item in month['items'] %}
+            <div class="card">
+                <h3>{{ item.name }}</h3>
+
+                <div class="amounts">
+                    <span>Budget: ${{ item.budget | currency }}</span>
+                    <span>Spent: ${{ item.spent | currency }}</span>
+                </div>
+
+                <div class="amounts">
+                    <span class="remaining {% if item.remaining < 0 %}negative{% else %}positive{% endif %}">
+                        Remaining: ${{ item.remaining | currency }}
+                    </span>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill {% if item.remaining < 0 %}negative{% else %}positive{% endif %}"
+                         style="width: {{ (item.spent / item.budget * 100) if item.budget > 0 else 0 }}%;">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </details>
+    {% endfor %}
+{% else %}
+    <p class="empty-state">No history available yet.</p>
+{% endif %}
+
+{% endblock %}

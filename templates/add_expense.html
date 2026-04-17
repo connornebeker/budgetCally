@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Add Expense</h2>
+
+<form method="POST">
+    <select name="category_id">
+        {% for cat in categories %}
+        <option value="{{ cat.id }}"
+            {% if selected_category and selected_category|int == cat.id %}selected{% endif %}>
+            {{ cat.name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <input type="number" step="0.01" name="amount" placeholder="Amount" required>
+
+    <button type="submit">Add</button>
+</form>
+
+{% endblock %}

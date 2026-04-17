@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Add Category</h2>
+
+<form method="POST">
+    <input type="text" name="name" placeholder="Category Name" required>
+    <input type="number" step="0.01" name="budget" placeholder="Budget Amount" required>
+    <button type="submit">Add</button>
+</form>
+
+{% endblock %}
