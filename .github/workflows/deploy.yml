@@ -23,7 +23,6 @@ jobs:
           source: "./"
           target: "/home/${{ secrets.PI_USER }}/BUDGET_CALLY"
           rm: true
-          exclude: ".github"
 
       - name: Deploy on Raspberry Pi
         uses: appleboy/ssh-action@v0.1.8
