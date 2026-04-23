@@ -18,7 +18,7 @@ source venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 
-sudo tee /etc/systemd/system/${SERVICE_NAME}.service > /dev/null <<'EOF'
+sudo tee /etc/systemd/system/${SERVICE_NAME}.service > /dev/null <<EOF
 [Unit]
 Description=Budget Cally Flask App
 After=network.target
